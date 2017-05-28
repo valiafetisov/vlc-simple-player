@@ -1,12 +1,13 @@
 {
   "name": "vlc-simple-player",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "simple command-line vlc player with time and track status support via http interface",
   "main": "app.js",
   "dependencies": {
     "child_process": "^1.0.2",
     "crypto": "0.0.3",
-    "request": "^2.81.0"
+    "request": "^2.81.0",
+    "vlc-command": "^1.1.1"
   },
   "keywords": [
     "vlc",

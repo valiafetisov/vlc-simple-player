@@ -1,8 +1,7 @@
 var request = require('request')
 var spawn = require('child_process').spawn
 var crypto = require('crypto')
-
-var vlcPath = '/Applications/VLC.app/Contents/MacOS/VLC'
+var getVlcСommand = require('vlc-command')
 
 var vlc = {
   password: crypto.randomBytes(48).toString('hex'),
@@ -13,11 +12,14 @@ var vlc = {
   play: function (filePath, options) {
     if (typeof filePath !== 'string') throw new Error('please provide path to a file')
     if (options != null && options.password != null) this.password = options.password
-    var defaultParams = ['--fullscreen', '--play-and-stop', '--extraintf', 'http', '--http-password', this.password]
+    var defaultParams = ['--fullscreen', '--loop', '--extraintf', 'http', '--http-password', this.password]
     defaultParams.push(filePath)
-    this.player = spawn(vlcPath, defaultParams)
-    this.player.on('close', (code) => {
-      process.exit()
+    getVlcСommand(function (err, vlcPath) {
+      if (err) return console.error(err)
+      vlc.player = spawn(vlcPath, defaultParams)
+      vlc.player.on('close', (code) => {
+        process.exit()
+      })
     })
   },
   getPassword: function () {
