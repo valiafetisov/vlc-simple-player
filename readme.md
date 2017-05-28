@@ -1,5 +1,7 @@
 # VLC simple player
 
+> This package is currently in development and tested only on MAC system with default VLC installation
+
 Simple module that starts VLC player via command-line together with HTTP interface enabled.
 It's provide a unified API to start playing a file and to get information about current track.
 

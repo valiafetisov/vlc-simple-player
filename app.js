@@ -11,7 +11,7 @@ var vlc = {
     this.callbacks[what] = cb
   },
   play: function (filePath, options) {
-    if (typeof filePath !== 'string') throw 'please provide path to a file'
+    if (typeof filePath !== 'string') throw new Error('please provide path to a file')
     if (options != null && options.password != null) this.password = options.password
     var defaultParams = ['--fullscreen', '--play-and-stop', '--extraintf', 'http', '--http-password', this.password]
     defaultParams.push(filePath)
@@ -35,7 +35,7 @@ process.on('SIGINT', function () {
 
 setInterval(function () {
   request.get('http://:' + vlc.getPassword() + '@localhost:8080/requests/status.json', function (err, res, json) {
-    if (err) throw 'error accessing web interface'
+    if (err) throw new Error('error accessing web interface')
     var status = JSON.parse(json)
     if (vlc.callbacks.statuschange) vlc.callbacks.statuschange(status)
   })
