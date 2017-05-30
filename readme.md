@@ -32,3 +32,5 @@ vlc.on('statuschange', (status) => {
     - `{password: 'string'}` will set a custom password for the HTTP interface (instead of random)
 - `vlc.quit()` – stops the movie and close player (via SIGKILL)
 - `vlc.getPassword()` – returns a string of a random generated password for the HTTP interface
+
+[Spawned process](https://nodejs.org/api/child_process.html#child_process_child_process_spawn_command_args_options) is also exposed as `vlc.player`.
