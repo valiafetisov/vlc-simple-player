@@ -12,7 +12,7 @@ var vlc = {
   play: function (filePath, options) {
     if (typeof filePath !== 'string') throw new Error('please provide path to a file')
     if (options != null && options.password != null) this.password = options.password
-    var defaultParams = ['--fullscreen', '--loop', '--extraintf', 'http', '--http-password', this.password]
+    var defaultParams = ['--fullscreen', '--loop', '--no-video-title', '--extraintf', 'http', '--http-password', this.password]
     defaultParams.push(filePath)
     getVlcСommand(function (err, vlcPath) {
       if (err) return console.error(err)
