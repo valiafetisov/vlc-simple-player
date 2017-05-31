@@ -2,6 +2,10 @@
   "name": "vlc-simple-player",
   "version": "0.2.1",
   "description": "simple command-line vlc player with time and track status support via http interface",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/valiafetisov/vlc-simple-player.git"
+  },
   "main": "app.js",
   "dependencies": {
     "child_process": "^1.0.2",
