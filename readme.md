@@ -28,8 +28,9 @@ vlc.on('statuschange', (status) => {
 
 - `vlc.play(path[, options])` – starts a VLC player in fullscreen
   - `path` – string path to the video file `./test.mov`
-  - `options` – object with additional options
-    - `{password: 'string'}` will set a custom password for the HTTP interface (instead of random)
+  - `options` – object with _additional_ options
+    - `{password: String}` will set a custom password for the HTTP interface (instead of random)
+    - `{port: Number}` will set a custom port for the HTTP interface (instead of random)
 - `vlc.quit()` – stops the movie and close player (via SIGKILL)
 - `vlc.getPassword()` – returns a string of a random generated password for the HTTP interface
 - `vlc.on(eventName, callback)`

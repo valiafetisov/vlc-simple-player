@@ -4,6 +4,7 @@ var crypto = require('crypto')
 var getVlcСommand = require('vlc-command')
 
 var vlc = {
+  port: 8080,
   password: crypto.randomBytes(48).toString('hex'),
   callbacks: {},
   on: function (what, cb) {
@@ -12,7 +13,15 @@ var vlc = {
   play: function (filePath, options) {
     if (typeof filePath !== 'string') throwError('please provide path to a file')
     if (options != null && options.password != null) this.password = options.password
-    var defaultParams = ['--fullscreen', '--loop', '--no-video-title', '--extraintf', 'http', '--http-password', this.password]
+    if (options != null && options.port != null) this.port = options.port.toString()
+    var defaultParams = [
+      '--fullscreen',
+      '--loop',
+      '--no-video-title',
+      '--extraintf', 'http',
+      '--http-password', this.password,
+      '--http-port', this.port
+    ]
     defaultParams.push(filePath)
     getVlcСommand(function (err, vlcPath) {
       if (err) return console.error(err)
@@ -33,7 +42,7 @@ var vlc = {
     if (this.player) this.player.kill('SIGKILL')
   },
   get: function (endpoint, cb) {
-    request.get('http://:' + vlc.getPassword() + '@localhost:8080' + endpoint, function (err, res, json) {
+    request.get('http://:' + vlc.getPassword() + '@localhost:' + vlc.port + endpoint, function (err, res, json) {
       if (err) throwError('error accessing web interface')
       try {
         var data = JSON.parse(json)
