@@ -17,6 +17,7 @@ var vlc = {
     getVlcСommand(function (err, vlcPath) {
       if (err) return console.error(err)
       vlc.player = spawn(vlcPath, defaultParams)
+      setupStatusRequests()
       vlc.player.on('close', (code) => {
         process.exit()
       })
@@ -38,12 +39,14 @@ process.on('SIGINT', function () {
   process.exit()
 })
 
-setInterval(function () {
-  request.get('http://:' + vlc.getPassword() + '@localhost:8080/requests/status.json', function (err, res, json) {
-    if (err) throw new Error('error accessing web interface')
-    var status = JSON.parse(json)
-    if (vlc.callbacks.statuschange) vlc.callbacks.statuschange(status)
-  })
-}, 1000)
+function setupStatusRequests (interval = 1000) {
+  return setInterval(function () {
+    request.get('http://:' + vlc.getPassword() + '@localhost:8080/requests/status.json', function (err, res, json) {
+      if (err) throw new Error('error accessing web interface')
+      var status = JSON.parse(json)
+      if (vlc.callbacks.statuschange) vlc.callbacks.statuschange(status)
+    })
+  }, interval)
+}
 
 module.exports = vlc
