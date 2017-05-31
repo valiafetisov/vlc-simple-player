@@ -43,3 +43,7 @@ vlc.on('statuschange', (status) => {
     [full list of commands and documentation](https://wiki.videolan.org/VLC_HTTP_requests/)
 
 [Spawned process](https://nodejs.org/api/child_process.html#child_process_child_process_spawn_command_args_options) is also exposed as `vlc.player`.
+
+## Contribution
+
+Please feel free to submit a pull request for a bug fix or new features
