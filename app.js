@@ -20,6 +20,9 @@ var vlc = {
       vlc.player.on('close', (code) => {
         process.exit()
       })
+      vlc.player.stderr.on('data', (data) => {
+        if (vlc.callbacks.error) vlc.callbacks.error(data.toString())
+      })
     })
   },
   getPassword: function () {
