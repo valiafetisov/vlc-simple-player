@@ -10,7 +10,7 @@ var vlc = {
     this.callbacks[what] = cb
   },
   play: function (filePath, options) {
-    if (typeof filePath !== 'string') throw new Error('please provide path to a file')
+    if (typeof filePath !== 'string') throwError('please provide path to a file')
     if (options != null && options.password != null) this.password = options.password
     var defaultParams = ['--fullscreen', '--loop', '--no-video-title', '--extraintf', 'http', '--http-password', this.password]
     defaultParams.push(filePath)
@@ -31,6 +31,17 @@ var vlc = {
   },
   quit: function () {
     if (this.player) this.player.kill('SIGKILL')
+  },
+  get: function (endpoint, cb) {
+    request.get('http://:' + vlc.getPassword() + '@localhost:8080' + endpoint, function (err, res, json) {
+      if (err) throwError('error accessing web interface')
+      try {
+        var data = JSON.parse(json)
+      } catch (error) {
+        throwError(error)
+      }
+      if (cb) cb(data)
+    })
   }
 }
 
@@ -41,12 +52,15 @@ process.on('SIGINT', function () {
 
 function setupStatusRequests (interval = 1000) {
   return setInterval(function () {
-    request.get('http://:' + vlc.getPassword() + '@localhost:8080/requests/status.json', function (err, res, json) {
-      if (err) throw new Error('error accessing web interface')
-      var status = JSON.parse(json)
+    vlc.get('/requests/status.json', function (status) {
       if (vlc.callbacks.statuschange) vlc.callbacks.statuschange(status)
     })
   }, interval)
+}
+
+function throwError (error) {
+  vlc.quit()
+  throw new Error('VLC: ' + error.toString())
 }
 
 module.exports = vlc
