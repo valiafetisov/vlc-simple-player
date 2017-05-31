@@ -39,8 +39,8 @@ vlc.on('statuschange', (status) => {
     - `'statuschange'` – callback with vlc status object as an argument
 - `vlc.get(path, callback)` - and exposed request method to the VLC HTTP interface
   - `path` – a string, HTTP GET path. with response in JSON format. example:
-    - `'/requests/status.json?command=pl_pause'` – toogle a pause
-    [full list of commands and documentation](https://wiki.videolan.org/VLC_HTTP_requests/)
+    `'/requests/status.json?command=pl_pause'` – toogle a pause.
+    [list of HTTP requests and interface description](https://wiki.videolan.org/VLC_HTTP_requests/)
 
 [Spawned process](https://nodejs.org/api/child_process.html#child_process_child_process_spawn_command_args_options) is also exposed as `vlc.player`.
 
