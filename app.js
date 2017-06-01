@@ -8,6 +8,9 @@ var vlc = {
   password: crypto.randomBytes(48).toString('hex'),
   callbacks: {},
   on: function (what, cb) {
+    if (typeof cb !== 'function') {
+      throwError(`please provide a callback function for the '${what}' event`)
+    }
     this.callbacks[what] = cb
   },
   play: function (filePath, options) {
@@ -20,9 +23,9 @@ var vlc = {
       '--no-video-title',
       '--extraintf', 'http',
       '--http-password', this.password,
-      '--http-port', this.port
+      '--http-port', this.port,
+      filePath
     ]
-    defaultParams.push(filePath)
     getVlcСommand(function (err, vlcPath) {
       if (err) return console.error(err)
       vlc.player = spawn(vlcPath, defaultParams)
@@ -41,15 +44,15 @@ var vlc = {
   quit: function () {
     if (this.player) this.player.kill('SIGKILL')
   },
-  get: function (endpoint, cb) {
+  request: function (endpoint, cb) {
     request.get('http://:' + vlc.getPassword() + '@localhost:' + vlc.port + endpoint, function (err, res, json) {
-      if (err) throwError('error accessing web interface')
+      if (err && cb) return cb(err)
       try {
         var data = JSON.parse(json)
       } catch (error) {
-        throwError(error)
+        if (cb) return cb(error)
       }
-      if (cb) cb(data)
+      if (cb) cb(null, data)
     })
   }
 }
@@ -59,10 +62,20 @@ process.on('SIGINT', function () {
   process.exit()
 })
 
-function setupStatusRequests (interval = 1000) {
+var previousTime = null
+function setupStatusRequests (interval = 300) {
+  if (typeof vlc.callbacks.statuschange !== 'function') {
+    throwError('please provide a callback to the statuschange event')
+  }
   return setInterval(function () {
-    vlc.get('/requests/status.json', function (status) {
-      if (vlc.callbacks.statuschange) vlc.callbacks.statuschange(status)
+    vlc.request('/requests/status.json', function (error, status) {
+      if (error) vlc.callbacks.statuschange(error)
+      if (typeof status === 'undefined' || status.time == null) {
+        return vlc.callbacks.statuschange('unexpected HTTP request error')
+      }
+      if (previousTime === status.time) return
+      vlc.callbacks.statuschange(error, status)
+      previousTime = status.time
     })
   }, interval)
 }
