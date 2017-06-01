@@ -1,49 +1,49 @@
 # VLC simple player
 
 Simple module that starts VLC player via command-line together with HTTP interface enabled.
-It's provide a unified API to start playing a file and to get information about current track.
+It provides a unified API to start playing a file and to get information about current track.
 
 ## Install
 
 ```shell
 npm install vlc-simple-player --save
 ```
-(Please note you'll need VLC binary installed in your system, you can download it [here](http://www.videolan.org/vlc/#download))
+(Please note you'll need VLC binary installed in your system, you can download it on [official website](http://www.videolan.org/vlc/#download))
 
 ## Example usage
 
 ```javascript
-var vlc = require('vlc-simple-player')
+var VLC = require('vlc-simple-player')
 
 // start a fullscreen player
-vlc.play('./path-to-your-movie/test.mp4')
+var player = new VLC('./path-to-your-movie/test.mp4')
 
 // log current track time every second
-vlc.on('statuschange', (error, status) => {
+player.on('statuschange', (error, status) => {
   console.log('current time', status.time)
 })
 ```
 
-## Available methods
+## Interface
 
-- `vlc.play(path[, options])` – starts a VLC player in fullscreen
+- `new VLC(path[, options])` – starts a VLC player in fullscreen
   - `path` – string path to the video file `./test.mov`
   - `options` – object with _additional_ options
-    - `{password: String}` will set a custom password for the HTTP interface (instead of random, which can be accessed by `vlc.getPassword()` method, btw)
+    - `{password: String}` will set a custom password for the HTTP interface (instead of random, which can be accessed by `player.getPassword()` method, btw)
     - `{port: Number}` will set a custom port for the HTTP interface (instead of default 8080)
-- `vlc.on(eventName, callback)` - registers an event
+    - `{arguments: Array}` will replace default command-line arguments (`--fullscreen`, `--loop`, `--no-video-title`)
+- `player.on(eventName, callback)` - registers an event
   - `eventName` – a string, available options are:
     - `'error'` – stderr callback with error as an argument
     - `'statuschange'` – callback that fires every second if the movie is playing
   - `callback` – a function with error and status object as an arguments
-- `vlc.request(path, callback)` - exposed request method to the VLC HTTP interface
+- `player.request(path, callback)` - exposed request method to the VLC HTTP interface
   - `path` – a string, HTTP GET path with response in JSON format. For example:
     `vlc.request('/requests/status.json?command=pl_pause')` – toggles a pause.
     [list of HTTP requests and interface description](https://wiki.videolan.org/VLC_HTTP_requests/)
   - `callback` – a function with error and status object as an arguments
-- `vlc.quit()` – stops the movie and close the player (via SIGKILL)
-
-[Spawned process](https://nodejs.org/api/child_process.html#child_process_child_process_spawn_command_args_options) is also exposed as `vlc.player`.
+- `player.process` - exposed [spawned process](https://nodejs.org/api/child_process.html#child_process_child_process_spawn_command_args_options)
+- `player.quit()` – stops the movie and close the player (via `SIGKILL`)
 
 ## Contribution
 

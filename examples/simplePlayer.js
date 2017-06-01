@@ -1,13 +1,13 @@
-var vlc = require('../app.js')
+var VLC = require('../app.js')
 
-vlc.play('examples/test.mov')
+var player = new VLC('examples/test.mov')
 
-vlc.on('statuschange', (error, status) => {
+player.on('statuschange', (error, status) => {
   if (error) return console.error(error)
 
   console.log('timechange', status.time)
 
   if (status.time === 3) {
-    vlc.request('/requests/status.json?command=pl_pause')
+    player.request('/requests/status.json?command=pl_pause', () => {})
   }
 })
