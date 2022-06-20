@@ -50,7 +50,7 @@ class vlc {
       this._setupStatusRequests()
 
       this.process.on('close', (code) => {
-        this.process.exit()
+        this.process.kill("SIGINT")
       })
 
       this.process.stderr.on('data', (data) => {
